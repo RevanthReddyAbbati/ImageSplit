@@ -3,89 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precision Splitter | Mobile-Ready</title>
+    <title>Professional Image Splitter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        .canvas-container { position: relative; width: 100%; display: flex; justify-content: center; overflow: hidden; }
-        canvas { max-width: 100%; height: auto !important; border-radius: 8px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; padding-bottom: 70px; }
+        .canvas-container { position: relative; width: 100%; display: flex; justify-content: center; background: #f1f5f9; border-radius: 12px; overflow: hidden; }
+        canvas { max-width: 100%; height: auto !important; }
         #gridCanvas { position: absolute; top: 0; left: 50%; transform: translateX(-50%); pointer-events: none; }
-        footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #f8fafc; text-align: center; padding: 12px 0; font-size: 0.875rem; z-index: 50; }
-        body { padding-bottom: 80px; } /* Space for fixed footer */
+        footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 1px solid #e2e8f0; color: #64748b; text-align: center; padding: 15px 0; z-index: 50; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .btn-primary { background: #4f46e5; transition: all 0.2s; }
+        .btn-primary:hover { background: #4338ca; transform: translateY(-1px); }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-slate-50 text-slate-900">
 
-    <header class="bg-white border-b p-4 sticky top-0 z-40 shadow-sm">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="font-black text-indigo-600 tracking-tight text-xl italic">PRO-PRINT SPLIT</h1>
-            <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-1 rounded font-bold">V2.0 MOBILE</span>
+    <header class="bg-white border-b border-slate-200 p-5 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
+                </div>
+                <h1 class="font-bold text-xl tracking-tight text-slate-800">ImageSplitter<span class="text-indigo-600">Pro</span></h1>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto p-4 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <main class="max-w-7xl mx-auto p-4 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
         
         <section class="lg:col-span-4 space-y-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Configuration</h2>
+            <div class="glass-card p-8 rounded-2xl shadow-xl border border-white">
+                <h2 class="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-6">Split Configuration</h2>
                 
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold mb-2">1. Upload Artwork</label>
-                    <input type="file" id="imageInput" accept="image/*" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold mb-2">2. Split Method</label>
-                    <div class="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-xl">
-                        <button id="btnGrid" onclick="setMode('grid')" class="py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-indigo-600 transition-all">GRID MODE</button>
-                        <button id="btnDim" onclick="setMode('dimensions')" class="py-2 text-xs font-bold rounded-lg text-gray-500 transition-all">PHYSICAL SIZE</button>
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">Upload Image</label>
+                    <div class="relative group">
+                        <input type="file" id="imageInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="border-2 border-dashed border-slate-200 group-hover:border-indigo-400 rounded-xl p-6 text-center transition-colors">
+                            <p class="text-sm text-slate-500" id="fileNameDisplay">Drag & drop or click to upload</p>
+                        </div>
                     </div>
                 </div>
 
-                <div id="controlsContainer" class="space-y-4">
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">Split Method</label>
+                    <div class="flex gap-2 p-1.5 bg-slate-100 rounded-2xl">
+                        <button id="btnGrid" onclick="setMode('grid')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-white shadow-sm text-indigo-600 transition-all">GRID LAYOUT</button>
+                        <button id="btnDim" onclick="setMode('dimensions')" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-500 transition-all">PHYSICAL SIZE</button>
+                    </div>
+                </div>
+
+                <div id="controls" class="space-y-5">
                     <div id="gridInputs" class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">ROWS</label>
-                            <input type="number" id="rows" value="2" min="1" class="w-full mt-1 p-3 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Rows</label>
+                            <input type="number" id="rows" value="2" min="1" class="w-full p-3 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20">
                         </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">COLS</label>
-                            <input type="number" id="cols" value="3" min="1" class="w-full mt-1 p-3 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Columns</label>
+                            <input type="number" id="cols" value="2" min="1" class="w-full p-3 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                     </div>
 
                     <div id="dimInputs" class="hidden space-y-4">
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-bold text-gray-500">WIDTH</label>
-                                <input type="number" id="targetWidth" value="21" step="0.1" class="w-full mt-1 p-3 bg-gray-50 border rounded-xl">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Width</label>
+                                <input type="number" id="targetWidth" value="21" step="0.1" class="w-full p-3 bg-white border border-slate-200 rounded-xl">
                             </div>
-                            <div>
-                                <label class="text-xs font-bold text-gray-500">HEIGHT</label>
-                                <input type="number" id="targetHeight" value="29.7" step="0.1" class="w-full mt-1 p-3 bg-gray-50 border rounded-xl">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Height</label>
+                                <input type="number" id="targetHeight" value="29.7" step="0.1" class="w-full p-3 bg-white border border-slate-200 rounded-xl">
                             </div>
                         </div>
-                        <select id="unit" class="w-full p-3 bg-gray-50 border rounded-xl text-sm font-medium">
-                            <option value="cm">Centimeters (A4 Standard)</option>
-                            <option value="in">Inches</option>
-                            <option value="m">Meters</option>
+                        <select id="unit" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none">
+                            <option value="cm">Centimeters (cm)</option>
+                            <option value="in">Inches (in)</option>
+                            <option value="m">Meters (m)</option>
                         </select>
                     </div>
                 </div>
 
-                <button id="processBtn" class="w-full mt-8 bg-indigo-600 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100">
-                    Generate Tiles & Download
-                </button>
+                <div class="pt-8 border-t border-slate-100 mt-8 space-y-3">
+                    <button onclick="process('zip')" id="zipBtn" class="w-full btn-primary text-white py-4 rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-indigo-100">
+                        Download Images (.ZIP)
+                    </button>
+                    <button onclick="process('pdf')" id="pdfBtn" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-4 rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg transition-all active:scale-[0.98]">
+                        Download Print Ready (.PDF)
+                    </button>
+                </div>
             </div>
         </section>
 
-        <section class="lg:col-span-8">
-            <div class="bg-white p-2 lg:p-4 rounded-2xl shadow-sm border border-gray-200 min-h-[300px] flex items-center justify-center relative overflow-hidden">
-                <div id="emptyState" class="text-center p-10">
-                    <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <section class="lg:col-span-8 flex flex-col">
+            <div class="bg-white border border-slate-200 rounded-3xl p-4 lg:p-6 flex-1 flex items-center justify-center relative min-h-[400px] shadow-sm">
+                <div id="emptyState" class="text-center">
+                    <div class="mb-4 inline-flex p-5 bg-indigo-50 rounded-full text-indigo-600">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
-                    <p class="text-gray-400 font-medium">Upload an image to see the grid overlay</p>
+                    <p class="text-slate-400 font-medium">Ready for image processing</p>
                 </div>
 
                 <div id="previewWrapper" class="canvas-container hidden">
@@ -97,47 +116,38 @@
     </main>
 
     <footer>
-        Developed by <span class="font-bold text-white uppercase tracking-tighter">revanth reddy abbati</span>
+        Developed by <span class="font-bold text-slate-800">revanth reddy abbati</span>
     </footer>
 
     <script>
+        const { jsPDF } = window.jspdf;
         const imageInput = document.getElementById('imageInput');
         const mainCanvas = document.getElementById('mainCanvas');
         const gridCanvas = document.getElementById('gridCanvas');
-        const processBtn = document.getElementById('processBtn');
-        const emptyState = document.getElementById('emptyState');
         const previewWrapper = document.getElementById('previewWrapper');
+        const emptyState = document.getElementById('emptyState');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
 
         let currentMode = 'grid';
         let originalImage = new Image();
 
-        // UI Mode Toggle
-        window.setMode = (mode) => {
+        function setMode(mode) {
             currentMode = mode;
-            const btnGrid = document.getElementById('btnGrid');
-            const btnDim = document.getElementById('btnDim');
-            const gridInputs = document.getElementById('gridInputs');
-            const dimInputs = document.getElementById('dimInputs');
-
-            if (mode === 'grid') {
-                btnGrid.className = "py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-indigo-600 transition-all";
-                btnDim.className = "py-2 text-xs font-bold rounded-lg text-gray-500 transition-all";
-                gridInputs.classList.remove('hidden');
-                dimInputs.classList.add('hidden');
-            } else {
-                btnDim.className = "py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-indigo-600 transition-all";
-                btnGrid.className = "py-2 text-xs font-bold rounded-lg text-gray-500 transition-all";
-                dimInputs.classList.remove('hidden');
-                gridInputs.classList.add('hidden');
-            }
+            document.getElementById('gridInputs').classList.toggle('hidden', mode !== 'grid');
+            document.getElementById('dimInputs').classList.toggle('hidden', mode === 'grid');
+            
+            const isGrid = mode === 'grid';
+            document.getElementById('btnGrid').className = isGrid ? "flex-1 py-2.5 text-xs font-bold rounded-xl bg-white shadow-sm text-indigo-600 transition-all" : "flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-500 transition-all";
+            document.getElementById('btnDim').className = !isGrid ? "flex-1 py-2.5 text-xs font-bold rounded-xl bg-white shadow-sm text-indigo-600 transition-all" : "flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-500 transition-all";
+            
             updateGrid();
-        };
+        }
 
-        // Handle Image Upload
         imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
+            fileNameDisplay.innerText = file.name;
             const reader = new FileReader();
             reader.onload = (event) => {
                 originalImage.onload = () => {
@@ -153,26 +163,33 @@
         function initCanvases() {
             mainCanvas.width = originalImage.width;
             mainCanvas.height = originalImage.height;
-            const ctx = mainCanvas.getContext('2d');
-            ctx.drawImage(originalImage, 0, 0);
-            
+            mainCanvas.getContext('2d').drawImage(originalImage, 0, 0);
             gridCanvas.width = originalImage.width;
             gridCanvas.height = originalImage.height;
             updateGrid();
         }
 
-        // Live Grid Drawing Logic
         function updateGrid() {
             if (!originalImage.src) return;
-            
             const ctx = gridCanvas.getContext('2d');
             ctx.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
-            ctx.strokeStyle = "rgba(79, 70, 229, 0.8)"; // Indigo
-            ctx.lineWidth = Math.max(originalImage.width / 300, 2);
-            ctx.setLineDash([15, 15]);
+            
+            ctx.strokeStyle = "#4f46e5"; 
+            ctx.lineWidth = Math.max(originalImage.width / 400, 2);
+            ctx.setLineDash([10, 10]);
 
-            let totalRows, totalCols, tileW, tileH;
+            const { tileW, tileH, totalCols, totalRows } = calculateDimensions();
 
+            for (let i = 1; i < totalCols; i++) {
+                ctx.beginPath(); ctx.moveTo(i * tileW, 0); ctx.lineTo(i * tileW, gridCanvas.height); ctx.stroke();
+            }
+            for (let j = 1; j < totalRows; j++) {
+                ctx.beginPath(); ctx.moveTo(0, j * tileH); ctx.lineTo(gridCanvas.width, j * tileH); ctx.stroke();
+            }
+        }
+
+        function calculateDimensions() {
+            let tileW, tileH, totalRows, totalCols;
             if (currentMode === 'grid') {
                 totalRows = parseInt(document.getElementById('rows').value) || 1;
                 totalCols = parseInt(document.getElementById('cols').value) || 1;
@@ -182,98 +199,64 @@
                 const unit = document.getElementById('unit').value;
                 const valW = parseFloat(document.getElementById('targetWidth').value) || 1;
                 const valH = parseFloat(document.getElementById('targetHeight').value) || 1;
-                
-                let pixelsPerUnit = 96; // Standard DPI
-                if (unit === 'cm') pixelsPerUnit = 96 / 2.54;
-                if (unit === 'm') pixelsPerUnit = (96 / 2.54) * 100;
-
-                tileW = valW * pixelsPerUnit;
-                tileH = valH * pixelsPerUnit;
-                totalCols = Math.ceil(originalImage.width / tileW);
-                totalRows = Math.ceil(originalImage.height / tileH);
-            }
-
-            // Draw Vertical Lines
-            for (let i = 1; i < totalCols; i++) {
-                ctx.beginPath();
-                ctx.moveTo(i * tileW, 0);
-                ctx.lineTo(i * tileW, gridCanvas.height);
-                ctx.stroke();
-            }
-
-            // Draw Horizontal Lines
-            for (let j = 1; j < totalRows; j++) {
-                ctx.beginPath();
-                ctx.moveTo(0, j * tileH);
-                ctx.lineTo(gridCanvas.width, j * tileH);
-                ctx.stroke();
-            }
-        }
-
-        // Listen for all input changes
-        document.querySelectorAll('input, select').forEach(el => {
-            el.addEventListener('input', updateGrid);
-        });
-
-        // Split & Download Logic
-        processBtn.addEventListener('click', async () => {
-            if (!originalImage.src) return alert("Please upload an image first!");
-
-            const zip = new JSZip();
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            
-            let tileW, tileH, totalRows, totalCols;
-
-            if (currentMode === 'grid') {
-                totalRows = parseInt(document.getElementById('rows').value) || 1;
-                totalCols = parseInt(document.getElementById('cols').value) || 1;
-                tileW = originalImage.width / totalCols;
-                tileH = originalImage.height / totalRows;
-            } else {
-                const unit = document.getElementById('unit').value;
-                const valW = parseFloat(document.getElementById('targetWidth').value);
-                const valH = parseFloat(document.getElementById('targetHeight').value);
                 let ppu = (unit === 'in') ? 96 : (unit === 'cm' ? 96/2.54 : (96/2.54)*100);
                 tileW = valW * ppu;
                 tileH = valH * ppu;
                 totalCols = Math.ceil(originalImage.width / tileW);
                 totalRows = Math.ceil(originalImage.height / tileH);
             }
+            return { tileW, tileH, totalRows, totalCols };
+        }
 
-            processBtn.innerText = "Processing Tiles...";
-            processBtn.disabled = true;
-
-            for (let r = 0; r < totalRows; r++) {
-                for (let c = 0; c < totalCols; c++) {
-                    // Set canvas size for current tile
-                    // Note: Handle last tiles if dimensions don't fit perfectly
-                    const currentW = Math.min(tileW, originalImage.width - (c * tileW));
-                    const currentH = Math.min(tileH, originalImage.height - (r * tileH));
-                    
-                    tempCanvas.width = currentW;
-                    tempCanvas.height = currentH;
-                    
-                    tempCtx.drawImage(
-                        originalImage,
-                        c * tileW, r * tileH, currentW, currentH,
-                        0, 0, currentW, currentH
-                    );
-
-                    const imgData = tempCanvas.toDataURL('image/png', 1.0).split(',')[1];
-                    zip.file(`tile_row${r+1}_col${c+1}.png`, imgData, {base64: true});
+        async function process(type) {
+            if (!originalImage.src) return alert("Upload an image first.");
+            const { tileW, tileH, totalRows, totalCols } = calculateDimensions();
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            if (type === 'zip') {
+                const zip = new JSZip();
+                for (let r = 0; r < totalRows; r++) {
+                    for (let c = 0; c < totalCols; c++) {
+                        const w = Math.min(tileW, originalImage.width - (c * tileW));
+                        const h = Math.min(tileH, originalImage.height - (r * tileH));
+                        tempCanvas.width = w; tempCanvas.height = h;
+                        tempCtx.drawImage(originalImage, c * tileW, r * tileH, w, h, 0, 0, w, h);
+                        zip.file(`tile_${r+1}_${c+1}.png`, tempCanvas.toDataURL('image/png').split(',')[1], {base64: true});
+                    }
                 }
+                const content = await zip.generateAsync({type: "blob"});
+                saveAs(content, "split_images.zip");
+            } else {
+                // PDF Logic - One tile per page
+                const pdf = new jsPDF({
+                    orientation: tileW > tileH ? 'l' : 'p',
+                    unit: 'px',
+                    format: [tileW, tileH]
+                });
+
+                for (let r = 0; r < totalRows; r++) {
+                    for (let c = 0; c < totalCols; c++) {
+                        if (r > 0 || c > 0) pdf.addPage([tileW, tileH]);
+                        const w = Math.min(tileW, originalImage.width - (c * tileW));
+                        const h = Math.min(tileH, originalImage.height - (r * tileH));
+                        tempCanvas.width = w; tempCanvas.height = h;
+                        tempCtx.drawImage(originalImage, c * tileW, r * tileH, w, h, 0, 0, w, h);
+                        pdf.addImage(tempCanvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, w, h);
+                    }
+                }
+                pdf.save("split_images.pdf");
             }
+        }
 
-            const content = await zip.generateAsync({type: "blob"});
+        function saveAs(blob, name) {
             const link = document.createElement('a');
-            link.href = URL.createObjectURL(content);
-            link.download = `split_by_revanth.zip`;
+            link.href = URL.createObjectURL(blob);
+            link.download = name;
             link.click();
+        }
 
-            processBtn.innerText = "Generate Tiles & Download";
-            processBtn.disabled = false;
-        });
+        document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', updateGrid));
     </script>
 </body>
 </html>
